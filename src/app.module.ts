@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
 import { MovieService } from './movie/movie.service';
 import { MovieController } from './movie/movie.controller';
 import { MovieModule } from './movie/movie.module';
+import {
+  ElasticsearchModule,
+  ElasticsearchService,
+} from '@nestjs/elasticsearch';
 
 @Module({
   imports: [

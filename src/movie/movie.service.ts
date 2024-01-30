@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 import * as fs from 'fs';
 
 @Injectable()
 export class MovieService {
+  constructor(private readonly movieData: ElasticsearchService) {}
   async getMovieDatas() {
     fs.readFile('movie_ids.json', 'utf8', (err, data) => {
       if (err) {
@@ -24,5 +26,42 @@ export class MovieService {
       });
     });
     return 'movie datas!!!!';
+  }
+
+  async addMovie() {
+    try {
+      return await this.movieData.index({
+        index: 'test',
+        body: {
+          title: 'testTitle',
+          description: 'testDescription',
+          isAdmin: true,
+          likes: [{ id: 1, name: "ali" }, { id: 2, name: "irdan" }],
+          more: {
+            its: "good",
+            really: "mean it"
+          }
+        },
+      });
+
+      //   return await this.movieData.indices.create({
+      //     index: 'test', // Index name
+      //     body: {
+      //       mappings: {
+      //         properties: {
+      //           title: { type: 'text' },
+      //           description: { type: 'text' },
+      //           // Add more field mappings as needed
+      //         },
+      //       },
+      //       settings: {
+      //         // Configure index settings as needed
+      //       },
+      //     },
+      //   });
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
   }
 }
