@@ -1,12 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MovieService } from './movie.service';
 import { MovieController } from './movie.controller';
-import {
-  ElasticsearchModule,
-  ElasticsearchService,
-} from '@nestjs/elasticsearch';
+import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
 
 @Module({
   imports: [

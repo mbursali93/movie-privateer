@@ -36,11 +36,14 @@ export class MovieService {
           title: 'testTitle',
           description: 'testDescription',
           isAdmin: true,
-          likes: [{ id: 1, name: "ali" }, { id: 2, name: "irdan" }],
+          likes: [
+            { id: 1, name: 'ali' },
+            { id: 2, name: 'irdan' },
+          ],
           more: {
-            its: "good",
-            really: "mean it"
-          }
+            its: 'good',
+            really: 'mean it',
+          },
         },
       });
 
@@ -63,5 +66,37 @@ export class MovieService {
       console.log(err);
       return err;
     }
+  }
+
+  async createMovieIndex() {
+    return await this.movieData.indices.create({
+      index: 'movies',
+      body: {
+        mappings: {
+          properties: {
+            id: { type: 'integer' },
+            imdb_id: { type: 'keyword' },
+            title: { type: 'text' },
+            description: { type: 'text' },
+            release_date: { type: 'date' },
+            status: { type: 'keyword' },
+            genres: { type: 'keyword' },
+            language: { type: 'keyword' },
+            collection: { type: 'text' },
+            posters: { type: 'keyword' },
+            runtime: { type: 'integer' },
+            cast: { type: 'text' },
+            directors: { type: 'text' },
+            popularity: { type: 'double' },
+          },
+        },
+        settings: {
+          index: {
+            number_of_shards: 1,
+            number_of_replicas: 1,
+          },
+        },
+      },
+    });
   }
 }
