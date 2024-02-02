@@ -1,5 +1,6 @@
 import { Controller, Get, Post } from '@nestjs/common';
 import { MovieService } from './movie.service';
+import * as axios from 'axios';
 
 @Controller('movie')
 export class MovieController {
@@ -7,11 +8,11 @@ export class MovieController {
 
   @Get()
   async getMovieDatas() {
-    return await this.movieService.getMovieDatas();
+    // 
   }
 
   @Post()
   async addMovie() {
-    return await this.movieService.addMovie();
+    // return await this.movieService.addMovie();
   }
 }
