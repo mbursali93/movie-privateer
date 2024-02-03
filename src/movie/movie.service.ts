@@ -10,6 +10,14 @@ export class MovieService {
 
   async addMovie(movie: MovieDto) {
     try {
+      const indexExists = await this.movieData.indices.exists({
+        index: 'movies',
+      });
+      if (!indexExists) await this.createMovieIndex();
+      return await this.movieData.index({
+        index: 'movies',
+        body: movie,
+      });
     } catch (err) {
       console.log(err);
     }
@@ -55,30 +63,12 @@ export class MovieService {
         return;
       }
 
-      // const lines: string[] = data.trim().split('\n');
-      const lines = [
-        {
-          adult: false,
-          id: 81548,
-          original_title: "א' תחסל אותם",
-          popularity: 0.6,
-          video: false,
-        },
-        {
-          adult: false,
-          id: 81549,
-          original_title: 'Her Şey Çok Güzel Olacak',
-          popularity: 3.629,
-          video: false,
-        },
-      ];
+      const lines: string[] = data.trim().split('\n');
 
-      lines.forEach(async (line) => {
+      for (let i = 0; i < 49999; i++) {
         try {
-          // const movie = JSON.parse(line);
-          // const movieId: number = movie.id;
-
-          const movieId = line.id;
+          const movie = JSON.parse(lines[i]);
+          const movieId: number = movie.id;
 
           const movieData = await axios.get(
             `${process.env.TMDB_BASE_URL}/${movieId}?api_key=${process.env.TMDB_API_KEY}`,
@@ -110,6 +100,10 @@ export class MovieService {
             return data.name;
           });
 
+          const collection = belongs_to_collection
+            ? belongs_to_collection.name
+            : null;
+
           const directors = crew
             .filter((data) => {
               return data.known_for_department == 'Directing';
@@ -118,7 +112,6 @@ export class MovieService {
               return data.name;
             });
 
-          const posters = [];
           const movieGenres = genres.map((data) => {
             return data.name;
           });
@@ -133,10 +126,10 @@ export class MovieService {
             cast: movieCast,
             directors,
             status,
-            collection: belongs_to_collection.name,
+            collection,
             popularity,
             genres: movieGenres,
-            release_date, // change here
+            release_date: new Date(release_date),
             posters: [
               `${process.env.TMDB_IMAGE}` + poster_path,
               `${process.env.TMDB_IMAGE}` + backdrop_path,
@@ -145,10 +138,7 @@ export class MovieService {
         } catch (error) {
           console.error('Error parsing JSON:', error);
         }
-      });
-      // return movieIds;
+      }
     });
-    //console.log(movieIds);
-    // return movieIds;
   }
 }

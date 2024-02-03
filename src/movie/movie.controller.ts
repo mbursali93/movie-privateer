@@ -8,7 +8,7 @@ export class MovieController {
 
   @Get()
   async getMovieDatas() {
-    // 
+    return await this.movieService.getAllMovieDatas();
   }
 
   @Post()
