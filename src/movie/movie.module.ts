@@ -3,6 +3,10 @@ import { MovieService } from './movie.service';
 import { MovieController } from './movie.controller';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MovieResolver } from './movie.resolver';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver } from '@nestjs/apollo';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -17,8 +21,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
       inject: [ConfigService],
     }),
+    GraphQLModule.forRoot({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    }),
   ],
-  providers: [MovieService],
+  providers: [MovieService, MovieResolver],
   controllers: [MovieController],
   exports: [ElasticsearchModule],
 })

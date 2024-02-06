@@ -6,15 +6,30 @@ import { MovieDto } from 'src/movie.dto';
 
 @Injectable()
 export class MovieService {
-  constructor(private readonly movieData: ElasticsearchService) {}
+  constructor(private readonly elasticsearchService: ElasticsearchService) {}
+
+  async getMovies() {
+    const movies = await this.elasticsearchService.search({
+      index: 'movies',
+      body: {
+        query: {
+          match: {
+            id: 70,
+          },
+        },
+      },
+    });
+    console.log(movies);
+    return movies.hits.hits;
+  }
 
   async addMovie(movie: MovieDto) {
     try {
-      const indexExists = await this.movieData.indices.exists({
+      const indexExists = await this.elasticsearchService.indices.exists({
         index: 'movies',
       });
       if (!indexExists) await this.createMovieIndex();
-      return await this.movieData.index({
+      return await this.elasticsearchService.index({
         index: 'movies',
         body: movie,
       });
@@ -24,7 +39,7 @@ export class MovieService {
   }
 
   async createMovieIndex() {
-    return await this.movieData.indices.create({
+    return await this.elasticsearchService.indices.create({
       index: 'movies',
       body: {
         mappings: {
@@ -70,7 +85,7 @@ export class MovieService {
           const movie = JSON.parse(lines[i]);
           const movieId: number = movie.id;
 
-          const movieData = await axios.get(
+          const elasticsearchService = await axios.get(
             `${process.env.TMDB_BASE_URL}/${movieId}?api_key=${process.env.TMDB_API_KEY}`,
           );
 
@@ -92,7 +107,7 @@ export class MovieService {
             popularity,
             poster_path,
             backdrop_path,
-          } = movieData.data;
+          } = elasticsearchService.data;
 
           const { cast, crew } = movieCredits.data;
 
