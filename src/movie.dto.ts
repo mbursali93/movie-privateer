@@ -1,5 +1,6 @@
 import { IsInt, IsString, IsDate, IsArray, IsOptional } from 'class-validator';
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Transform } from 'class-transformer';
 
 @ObjectType()
 export class MovieDto {
@@ -19,7 +20,8 @@ export class MovieDto {
   @IsString()
   description: string;
 
-  @Field()
+  @Field({ nullable: true })
+  // @Transform((value) => new Date(value))
   @IsDate()
   release_date: Date;
 
@@ -35,7 +37,7 @@ export class MovieDto {
   @IsString()
   language: string;
 
-  @Field()
+  @Field({ nullable: true })
   @IsOptional()
   @IsString()
   collection: string | null;
