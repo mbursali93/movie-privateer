@@ -19,8 +19,8 @@ export class MovieService {
         },
       },
     });
-    console.log(movies);
-    return movies.hits.hits;
+    // console.log(movies.hits.hits.map((hit) => hit._source));
+    return movies.hits.hits.map((hit) => hit._source);
   }
 
   async addMovie(movie: MovieDto) {
