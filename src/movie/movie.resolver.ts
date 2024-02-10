@@ -1,11 +1,11 @@
 import { Query, Resolver } from '@nestjs/graphql';
-import { MovieDto } from 'src/movie.dto';
 import { MovieService } from './movie.service';
+import { Movie } from 'src/models/movie.model';
 
-@Resolver(() => MovieDto)
+@Resolver(() => Movie)
 export class MovieResolver {
   constructor(private readonly movieService: MovieService) {}
-  @Query(() => [MovieDto])
+  @Query(() => [Movie])
   async getMovies() {
     return await this.movieService.getMovies();
   }

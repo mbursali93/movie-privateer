@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import axios from 'axios';
 import * as fs from 'fs';
-import { MovieDto } from 'src/movie.dto';
+import { MovieDto } from 'src/movie/dtos/movie.dto';
 
 @Injectable()
 export class MovieService {
@@ -19,7 +19,7 @@ export class MovieService {
         },
       },
     });
-    // console.log(movies.hits.hits.map((hit) => hit._source));
+
     return movies.hits.hits.map((hit) => hit._source);
   }
 
