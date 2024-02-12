@@ -14,7 +14,7 @@ export class Movie {
   @Field()
   description: string;
 
-  @Field()
+  @Field({ nullable: true })
   release_date: string;
 
   @Field()

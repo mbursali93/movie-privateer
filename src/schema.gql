@@ -7,7 +7,7 @@ type Movie {
   imdb_id: String!
   title: String!
   description: String!
-  release_date: String!
+  release_date: String
   status: String!
   genres: [String!]!
   language: String!
