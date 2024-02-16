@@ -3,23 +3,133 @@ import { ElasticsearchService } from '@nestjs/elasticsearch';
 import axios from 'axios';
 import * as fs from 'fs';
 import { MovieDto } from 'src/movie/dtos/movie.dto';
+import { GetMovieDto } from './dtos/get-movie.dto';
 
 @Injectable()
 export class MovieService {
   constructor(private readonly elasticsearchService: ElasticsearchService) {}
 
-  async getMovies() {
+  async getMovies(queries: GetMovieDto = {}) {
+    const {
+      cast,
+      collection,
+      description,
+      directors,
+      genres,
+      language,
+      limit,
+      order = 'desc',
+      page,
+      release_date,
+      runtime,
+      sort = 'release_date',
+      status,
+      title,
+    } = queries;
+
+    // const allGenres = [
+    //   'Action',
+    //   'Adventure',
+    //   'Animation',
+    //   'Comedy',
+    //   'Crime',
+    //   'Documentary',
+    //   'Drama',
+    //   'Family',
+    //   'Fantasy',
+    //   'History',
+    //   'Horror',
+    //   'Music',
+    //   'Mystery',
+    //   'Romance',
+    //   'Science Fiction',
+    //   'Thriller',
+    //   'TV Movie',
+    //   'War',
+    //   'Western',
+    // ];
+    // Handle query
+    const must = [];
+
+    if (cast)
+      must.push({
+        match: { cast: { query: cast, fuzziness: 'AUTO', operator: 'and' } },
+      });
+
+    if (title) must.push({ match_phrase_prefix: { title } });
+
+    if (description)
+      must.push({
+        match_phrase_prefix: { description },
+      });
+
+    if (language)
+      must.push({
+        match: { language },
+      });
+
+    if (status)
+      must.push({
+        match: { status },
+      });
+
+    if (collection)
+      must.push({
+        match_phrase_prefix: { collection },
+      });
+
+    if (genres) must.push({ terms: { genres } });
+
+    //handle must_not
+    // const must_not = [];
+    // if (genres) {
+    //   must_not.push({
+    //     terms: { genres: allGenres.filter((genre) => !genres.includes(genre)) },
+    //   });
+    // }
+
+    // handle filter
+
+    // handle sort
+    const sortQueries = [];
+    const sortTarget = {};
+    if (sort) {
+      sortQueries.push(Object.assign({}, { [sort]: { order } }));
+    } else {
+      sortQueries.push({ release_date: { order: 'desc' } });
+    }
+
+    // // console.log(must);
+    // // console.log(genres);
+    // console.log(sortTarget)
+    console.log(sortQueries);
+
+    const pageNumber = 1;
+    const pageSize = 10;
+
     const movies = await this.elasticsearchService.search({
       index: 'movies',
       body: {
+        // size: 10000,
+        from: (pageNumber - 1) * pageSize,
         query: {
-          match: {
-            id: 70,
+          bool: {
+            must,
+            // must_not,
+            // filter: [
+            //   // { range: { runtime: { gte: 180, lte: 200 } } },
+            //   // {
+            //   //   range: {
+            //   //     release_date: { gte: '1978-01-01', lte: '2000-01-01' },
+            //   //   },
+            //   // },
+            // ],
           },
         },
+        sort: sortQueries,
       },
     });
-
+    // console.log(movies.hits.hits.map((hit) => hit._source));
     return movies.hits.hits.map((hit) => hit._source);
   }
 
@@ -38,7 +148,7 @@ export class MovieService {
     }
   }
 
-  async createMovieIndex() {
+  private async createMovieIndex() {
     return await this.elasticsearchService.indices.create({
       index: 'movies',
       body: {

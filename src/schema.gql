@@ -20,5 +20,22 @@ type Movie {
 }
 
 type Query {
-  getMovies: [Movie!]!
+  getMovies(getMovieInput: GetMovieDto!): [Movie!]!
+}
+
+input GetMovieDto {
+  title: String
+  description: String
+  release_date: String
+  status: String
+  genres: [String!]
+  language: String
+  collection: String
+  runtime: Float
+  cast: [String!]
+  directors: [String!]
+  sort: String
+  order: String
+  page: String
+  limit: String
 }
