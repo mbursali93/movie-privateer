@@ -4,6 +4,7 @@ import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { GoogleStrategy } from 'src/utils/GoogleStrategy';
+import { User } from './entities/user.entity';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { GoogleStrategy } from 'src/utils/GoogleStrategy';
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([User]),
   ],
   providers: [UserService, GoogleStrategy],
   controllers: [UserController],

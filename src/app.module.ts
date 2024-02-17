@@ -3,13 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { config } from 'dotenv';
-import { MovieService } from './movie/movie.service';
-import { MovieController } from './movie/movie.controller';
 import { MovieModule } from './movie/movie.module';
 import { UserModule } from './user/user.module';
 import { PassportModule } from '@nestjs/passport';
-import * as passport from 'passport';
-
 
 @Module({
   imports: [
