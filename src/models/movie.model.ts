@@ -1,32 +1,32 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
 export class Movie {
   @Field(() => Int)
   id: number;
 
-  @Field()
+  @Field(() => String)
   imdb_id: string;
 
-  @Field()
+  @Field(() => String)
   title: string;
 
-  @Field()
+  @Field(() => String)
   description: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   release_date: string;
 
-  @Field()
+  @Field(() => String)
   status: string;
 
   @Field(() => [String])
   genres: string[];
 
-  @Field()
+  @Field(() => String)
   language: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   collection: string | null;
 
   @Field(() => [String])
@@ -41,6 +41,6 @@ export class Movie {
   @Field(() => [String])
   directors: string[];
 
-  @Field()
+  @Field(() => Float)
   popularity: number;
 }

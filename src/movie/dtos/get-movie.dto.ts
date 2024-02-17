@@ -1,29 +1,29 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, InputType, Int } from '@nestjs/graphql';
 
 @InputType()
 export class GetMovieDto {
   @Field({ nullable: true })
   title?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   description?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   release_date?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   status?: string;
 
   @Field(() => [String], { nullable: true })
   genres?: string[];
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   language?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   collection?: string | null;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   runtime?: number;
 
   @Field(() => [String], { nullable: true })
@@ -32,15 +32,15 @@ export class GetMovieDto {
   @Field(() => [String], { nullable: true })
   directors?: string[];
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   sort?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   order?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   page?: string;
 
-  @Field({ nullable: true })
+  @Field(() => String, { nullable: true })
   limit?: string;
 }

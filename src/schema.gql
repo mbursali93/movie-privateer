@@ -31,7 +31,7 @@ input GetMovieDto {
   genres: [String!]
   language: String
   collection: String
-  runtime: Float
+  runtime: Int
   cast: [String!]
   directors: [String!]
   sort: String
