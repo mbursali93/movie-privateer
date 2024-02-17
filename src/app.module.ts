@@ -7,11 +7,19 @@ import { MovieService } from './movie/movie.service';
 import { MovieController } from './movie/movie.controller';
 import { MovieModule } from './movie/movie.module';
 import { UserModule } from './user/user.module';
+import { PassportModule } from '@nestjs/passport';
+import * as passport from 'passport';
 
 
 @Module({
   imports: [
     ConfigModule.forRoot({ load: [config], isGlobal: true }),
+
+    PassportModule.register({
+      defaultStrategy: 'google',
+      session: true,
+    }),
+
     MovieModule,
     UserModule,
   ],

@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
+import { GoogleStrategy } from 'src/utils/GoogleStrategy';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { ConfigService } from '@nestjs/config';
       inject: [ConfigService],
     }),
   ],
-  providers: [UserService],
+  providers: [UserService, GoogleStrategy],
   controllers: [UserController],
 })
 export class UserModule {}
