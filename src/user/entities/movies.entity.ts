@@ -4,6 +4,7 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToMany,
+  UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 
@@ -17,4 +18,11 @@ export class Movie {
 
   @Column()
   movie_id: string;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
+  last_update: Date;
 }
