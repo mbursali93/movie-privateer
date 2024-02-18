@@ -27,27 +27,6 @@ export class MovieService {
       title,
     } = queries;
 
-    // const allGenres = [
-    //   'Action',
-    //   'Adventure',
-    //   'Animation',
-    //   'Comedy',
-    //   'Crime',
-    //   'Documentary',
-    //   'Drama',
-    //   'Family',
-    //   'Fantasy',
-    //   'History',
-    //   'Horror',
-    //   'Music',
-    //   'Mystery',
-    //   'Romance',
-    //   'Science Fiction',
-    //   'Thriller',
-    //   'TV Movie',
-    //   'War',
-    //   'Western',
-    // ];
     // Handle query
     const must = [];
 

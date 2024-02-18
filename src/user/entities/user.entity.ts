@@ -3,6 +3,7 @@ import { Entity, PrimaryColumn, Column, ManyToMany } from 'typeorm';
 import { Movie } from './movies.entity';
 import { Actor } from './actors.entity';
 import { Director } from './directors.entity';
+import { genres } from 'src/interfaces/genres';
 
 @Entity({ name: 'users' })
 export class User {
@@ -27,6 +28,6 @@ export class User {
   @ManyToMany(() => Director, (director) => director.user_id)
   liked_directors: Director[];
 
-  @Column()
-  liked_categories: string[][];
+  @Column('simple-array', { default: genres.map((genre) => [genre, 0]) })
+  liked_genres: string[][];
 }
