@@ -12,7 +12,7 @@ import { PassportModule } from '@nestjs/passport';
     ConfigModule.forRoot({ load: [config], isGlobal: true }),
 
     PassportModule.register({
-      defaultStrategy: 'google',
+      // defaultStrategy: 'google',
       session: true,
     }),
 

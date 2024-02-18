@@ -1,15 +1,11 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { GoogleOAuthGuard } from './user.guard';
+import { AuthGuard, GoogleOAuthGuard } from './user.guard';
+
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
-  @Get()
-  async getUserProfile() {
-    return await this.userService.getUserProfile();
-  }
 
   @UseGuards(GoogleOAuthGuard)
   @Get('google/login')
@@ -21,5 +17,12 @@ export class UserController {
   @Get('google/redirect')
   async googleRedirect() {
     return 'redirect';
+  }
+
+  @UseGuards(AuthGuard)
+  @Get()
+  async getUserProfile(@Req() req) {
+    console.log(req.user);
+    return await this.userService.getUserProfile();
   }
 }
