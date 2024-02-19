@@ -5,13 +5,14 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
   UpdateDateColumn,
+  PrimaryColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity({ name: 'movies' })
 export class Movie {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryColumn()
+  id: string;
 
   @ManyToMany(() => User, (user) => user.liked_movies)
   user_id: string;
