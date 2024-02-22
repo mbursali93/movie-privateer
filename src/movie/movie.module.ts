@@ -7,27 +7,18 @@ import { MovieResolver } from './movie.resolver';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver } from '@nestjs/apollo';
 import { join } from 'path';
+import { ElasticModule } from 'src/database/elastic.module';
 
 @Module({
   imports: [
-    ElasticsearchModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        node: configService.get('ELASTIC_URL'),
-        auth: {
-          username: configService.get('ELASTIC_USERNAME'),
-          password: configService.get('ELASTIC_PASSWORD'),
-        },
-      }),
-      inject: [ConfigService],
-    }),
+    ElasticModule,
     GraphQLModule.forRoot({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
   ],
-  providers: [MovieService, MovieResolver],
+  providers: [MovieService, MovieResolver, ElasticsearchModule],
   controllers: [MovieController],
-  exports: [ElasticsearchModule],
+  exports: [],
 })
 export class MovieModule {}
