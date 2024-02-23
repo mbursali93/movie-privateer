@@ -89,7 +89,7 @@ export class MovieService {
     const movies = await this.elasticsearchService.search({
       index: 'movies',
       body: {
-        // size: 10000,
+        size: 10000,
         from: (pageNumber - 1) * pageSize,
         query: {
           bool: {

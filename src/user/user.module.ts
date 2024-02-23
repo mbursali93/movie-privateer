@@ -6,6 +6,10 @@ import { ConfigService } from '@nestjs/config';
 import { GoogleStrategy } from 'src/utils/GoogleStrategy';
 import { User } from './entities/user.entity';
 import { SessionSerializer } from 'src/utils/Serializer';
+import { ElasticModule } from 'src/database/elastic.module';
+import { Director } from './entities/directors.entity';
+import { Movie } from 'src/models/movie.model';
+import { Actor } from './entities/actors.entity';
 
 @Module({
   imports: [
@@ -22,7 +26,8 @@ import { SessionSerializer } from 'src/utils/Serializer';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Director, Movie, Actor]),
+    ElasticModule,
   ],
   providers: [UserService, GoogleStrategy, SessionSerializer],
   controllers: [UserController],
