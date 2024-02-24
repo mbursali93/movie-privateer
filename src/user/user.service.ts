@@ -51,41 +51,80 @@ export class UserService {
         data.hits.hits.length > 0
           ? (data.hits.hits[0]._source as MovieDto)
           : null;
+
       if (!movie) throw new NotFoundException('No movies found.');
 
       const user = await this.userRepository.findOneBy({ id: user_id });
+      console.log(user_id);
 
       // Handle Movies
-      const movieLiked = await this.movieRepository.findOneBy({
-        //exists?
-        user_id,
-        movie_id,
-      });
+      // const movieLiked = await this.movieRepository.findOneBy({
+      //   //exists?
+      //   user_id,
+      //   movie_id,
+      // });
 
-      if (movieLiked)
-        throw new BadRequestException('You already liked that movie before');
+      // if (movieLiked)
+      //   throw new BadRequestException('You already liked that movie before');
 
-      const likedMovie = this.movieRepository.create({ user_id, movie_id }); //pushlucaz mı, direkt save yeter mi
-      user.liked_movies.push(likedMovie);
+      // const likedMovie = this.movieRepository.create({ user_id, movie_id }); //pushlucaz mı, direkt save yeter mi
+      // user.liked_movies.push(likedMovie);
 
       // Handle Directors
       const directors = new Set(movie.directors);
-      for (const director in directors) {
-        console.log(director);
+
+      for (const director of directors) {
         const directorLikedBefore = await this.directorRepository.findOneBy({
           name: director,
+          // user_id,
         });
-        
+
+        if (directorLikedBefore) {
+          directorLikedBefore.like_count++;
+          await this.directorRepository.save(directorLikedBefore);
+        } else {
+          const newDirector = await this.directorRepository.create({
+            name: director,
+            like_count: 1,
+            user_id,
+          });
+
+          await this.directorRepository.save(newDirector);
+          // user.liked_directors.push(newDirector);
+        }
       }
 
       // Handle Cast
 
+      for (let i = 0; i < 5; i++) {
+        const actor = movie.cast[i];
+        const actorLikedBefore = await this.actorRepository.findOneBy({
+          actor_name: actor,
+          like_count: 1,
+        });
+
+        if (actorLikedBefore) {
+          actorLikedBefore.like_count++;
+          await this.actorRepository.save(actorLikedBefore);
+        } else {
+          const likedActor = await this.actorRepository.create({
+            actor_name: actor,
+            user_id,
+            like_count: 1,
+          });
+
+          await this.actorRepository.save(likedActor);
+        }
+      }
+
       // Handle Genres
 
       // return user;
+      // await this.userRepository.save(user);
 
       return movie;
     } catch (err) {
+      console.log(err);
       return err.response;
     }
   }

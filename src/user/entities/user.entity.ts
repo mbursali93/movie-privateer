@@ -1,5 +1,5 @@
 import {} from '@nestjs/typeorm';
-import { Entity, PrimaryColumn, Column, ManyToMany } from 'typeorm';
+import { Entity, PrimaryColumn, Column, ManyToMany, JoinTable } from 'typeorm';
 import { Movie } from './movies.entity';
 import { Actor } from './actors.entity';
 import { Director } from './directors.entity';
