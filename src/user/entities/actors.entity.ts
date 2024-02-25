@@ -20,7 +20,8 @@ export class Actor {
   @Column({ default: 0 })
   like_count: number;
 
-  @ManyToMany(() => User, (user) => user.liked_actors)
+  @Column()
+  @Index()
   user_id: string;
 
   @UpdateDateColumn({

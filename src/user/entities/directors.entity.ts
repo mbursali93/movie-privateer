@@ -4,6 +4,7 @@ import {
   Column,
   ManyToMany,
   UpdateDateColumn,
+  Index,
 } from 'typeorm';
 import { User } from './user.entity';
 
@@ -12,7 +13,8 @@ export class Director {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToMany(() => User, (user) => user.liked_directors)
+  @Column()
+  @Index()
   user_id: string;
 
   @Column({ default: 0 })

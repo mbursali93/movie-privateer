@@ -14,7 +14,8 @@ export class Movie {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToMany(() => User, (user) => user.liked_movies)
+  @Column()
+  @Index()
   user_id: string;
 
   @Column()
