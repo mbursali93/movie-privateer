@@ -58,16 +58,16 @@ export class UserService {
       console.log(user_id);
 
       // Handle Movies
-      // const movieLiked = await this.movieRepository.findOneBy({
-      //   //exists?
-      //   user_id,
-      //   movie_id,
-      // });
+      const movieLiked = await this.movieRepository.findOneBy({
+        //exists?
+        user_id,
+        movie_id,
+      });
 
-      // if (movieLiked)
-      //   throw new BadRequestException('You already liked that movie before');
+      if (movieLiked)
+        throw new BadRequestException('You already liked that movie before');
 
-      // const likedMovie = this.movieRepository.create({ user_id, movie_id }); //pushlucaz mı, direkt save yeter mi
+      const likedMovie = this.movieRepository.create({ user_id, movie_id });
       // user.liked_movies.push(likedMovie);
 
       // Handle Directors
@@ -100,7 +100,7 @@ export class UserService {
         const actor = movie.cast[i];
         const actorLikedBefore = await this.actorRepository.findOneBy({
           actor_name: actor,
-          like_count: 1,
+          user_id,
         });
 
         if (actorLikedBefore) {
