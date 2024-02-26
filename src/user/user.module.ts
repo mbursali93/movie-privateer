@@ -8,7 +8,8 @@ import { User } from './entities/user.entity';
 import { SessionSerializer } from 'src/utils/Serializer';
 import { ElasticModule } from 'src/database/elastic.module';
 import { Director } from './entities/directors.entity';
-import { Movie } from 'src/models/movie.model';
+// import { Movie } from 'src/models/movie.model';
+import { Movie } from './entities/movies.entity';
 import { Actor } from './entities/actors.entity';
 
 @Module({

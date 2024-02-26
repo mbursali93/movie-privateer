@@ -68,6 +68,7 @@ export class UserService {
         throw new BadRequestException('You already liked that movie before');
 
       const likedMovie = this.movieRepository.create({ user_id, movie_id });
+      await this.movieRepository.save(likedMovie);
       // user.liked_movies.push(likedMovie);
 
       // Handle Directors
