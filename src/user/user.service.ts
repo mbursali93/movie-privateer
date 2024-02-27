@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -13,6 +14,7 @@ import { MovieDto } from 'src/movie/dtos/movie.dto';
 import { Director } from './entities/directors.entity';
 import { Actor } from './entities/actors.entity';
 import { GenreEnum } from 'src/interfaces/genres.enum';
+import { Genre } from './entities/genres.entity';
 
 @Injectable()
 export class UserService {
@@ -24,6 +26,8 @@ export class UserService {
     private readonly directorRepository: Repository<Director>,
     @InjectRepository(Actor)
     private readonly actorRepository: Repository<Actor>,
+    @InjectRepository(Genre)
+    private readonly genreRepository: Repository<Genre>,
     private readonly elasticsearchService: ElasticsearchService,
   ) {}
   async getUserProfile() {
@@ -36,6 +40,10 @@ export class UserService {
     if (user) return user;
 
     const savedUser = await this.userRepository.create(profile);
+    const savedGenres = await this.genreRepository.create({
+      user_id: savedUser.id,
+    });
+    await this.genreRepository.save(savedGenres);
     return await this.userRepository.save(savedUser);
   }
 
@@ -65,8 +73,8 @@ export class UserService {
         movie_id,
       });
 
-      // if (movieLiked)
-      //   throw new BadRequestException('You already liked that movie before');
+      if (movieLiked)
+        throw new BadRequestException('You already liked that movie before');
 
       const likedMovie = this.movieRepository.create({ user_id, movie_id });
       await this.movieRepository.save(likedMovie);
@@ -119,16 +127,22 @@ export class UserService {
         }
       }
 
-      
+      const genres = await this.genreRepository.findOneBy({ user_id });
 
       // Handle Genres
       for (const genre of movie.genres) {
-        //tv_movie, science_fiction
+        if (genre === 'TV Movie') {
+          genres.tv_movie++;
+        } else if (genre === 'Science Fiction') {
+          genres.science_fiction++;
+        } else {
+          genres[genre.toLowerCase()]++;
+        }
       }
-      
+
       // return user;
       await this.userRepository.save(user);
-
+      await this.genreRepository.save(genres);
       return movie;
     } catch (err) {
       console.log(err);

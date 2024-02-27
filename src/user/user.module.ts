@@ -11,6 +11,7 @@ import { Director } from './entities/directors.entity';
 // import { Movie } from 'src/models/movie.model';
 import { Movie } from './entities/movies.entity';
 import { Actor } from './entities/actors.entity';
+import { Genre } from './entities/genres.entity';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { Actor } from './entities/actors.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Director, Movie, Actor]),
+    TypeOrmModule.forFeature([User, Director, Movie, Actor, Genre]),
     ElasticModule,
   ],
   providers: [UserService, GoogleStrategy, SessionSerializer],
