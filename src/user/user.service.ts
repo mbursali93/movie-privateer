@@ -12,6 +12,7 @@ import { Movie } from './entities/movies.entity';
 import { MovieDto } from 'src/movie/dtos/movie.dto';
 import { Director } from './entities/directors.entity';
 import { Actor } from './entities/actors.entity';
+import { GenreEnum } from 'src/interfaces/genres.enum';
 
 @Injectable()
 export class UserService {
@@ -55,7 +56,7 @@ export class UserService {
       if (!movie) throw new NotFoundException('No movies found.');
 
       const user = await this.userRepository.findOneBy({ id: user_id });
-      console.log(user_id);
+      // console.log(user);
 
       // Handle Movies
       const movieLiked = await this.movieRepository.findOneBy({
@@ -64,8 +65,8 @@ export class UserService {
         movie_id,
       });
 
-      if (movieLiked)
-        throw new BadRequestException('You already liked that movie before');
+      // if (movieLiked)
+      //   throw new BadRequestException('You already liked that movie before');
 
       const likedMovie = this.movieRepository.create({ user_id, movie_id });
       await this.movieRepository.save(likedMovie);
@@ -118,15 +119,20 @@ export class UserService {
         }
       }
 
-      // Handle Genres
+      
 
+      // Handle Genres
+      for (const genre of movie.genres) {
+        //tv_movie, science_fiction
+      }
+      
       // return user;
-      // await this.userRepository.save(user);
+      await this.userRepository.save(user);
 
       return movie;
     } catch (err) {
       console.log(err);
-      return err.response;
+      return err.response || err;
     }
   }
 

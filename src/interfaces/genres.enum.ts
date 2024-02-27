@@ -1,4 +1,4 @@
-export enum MovieEnum {
+export enum GenreEnum {
   'Action',
   'Adventure',
   'Animation',

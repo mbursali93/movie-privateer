@@ -18,16 +18,4 @@ export class User {
 
   @Column({ nullable: true })
   surname: string;
-
-  // @ManyToMany(() => Movie, (movie) => movie.user_id)
-  // liked_movies: Movie[];
-
-  // @ManyToMany(() => Actor, (actor) => actor.user_id)
-  // liked_actors: Actor[];
-
-  // @ManyToMany(() => Director, (director) => director.user_id)
-  // liked_directors: Director[];
-
-  @Column('simple-array', { default: genres.map((genre) => [genre, 0]) })
-  liked_genres: string[][];
 }
