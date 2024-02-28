@@ -34,9 +34,11 @@ export class UserController {
     return await this.userService.likeMovie(user_id, movie_id);
   }
 
-  @UseGuards(AuthGuard)
-  @Get('dislike') //TODO: change method back to DELETE
-  async dislikeMovie() {
-    return 'ok';
+  // @UseGuards(AuthGuard)
+  @Get('dislike/:id') //TODO: change method back to DELETE
+  async dislikeMovie(@Param() params) {
+    const user_id = '118006333011418088831';
+    const movie_id = params.id;
+    return await this.userService.dislikeMovie(user_id, movie_id);
   }
 }

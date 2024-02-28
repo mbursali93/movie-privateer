@@ -1,7 +1,8 @@
 import {
   BadRequestException,
-  Inject,
+  HttpException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { Repository } from 'typeorm';
@@ -13,7 +14,6 @@ import { Movie } from './entities/movies.entity';
 import { MovieDto } from 'src/movie/dtos/movie.dto';
 import { Director } from './entities/directors.entity';
 import { Actor } from './entities/actors.entity';
-import { GenreEnum } from 'src/interfaces/genres.enum';
 import { Genre } from './entities/genres.entity';
 
 @Injectable()
@@ -63,7 +63,7 @@ export class UserService {
 
       if (!movie) throw new NotFoundException('No movies found.');
 
-      const user = await this.userRepository.findOneBy({ id: user_id });
+      // const user = await this.userRepository.findOneBy({ id: user_id });
       // console.log(user);
 
       // Handle Movies
@@ -86,7 +86,7 @@ export class UserService {
       for (const director of directors) {
         const directorLikedBefore = await this.directorRepository.findOneBy({
           name: director,
-          // user_id,
+          user_id,
         });
 
         if (directorLikedBefore) {
@@ -141,7 +141,7 @@ export class UserService {
       }
 
       // return user;
-      await this.userRepository.save(user);
+      // await this.userRepository.save(user);
       await this.genreRepository.save(genres);
       return movie;
     } catch (err) {
@@ -151,6 +151,84 @@ export class UserService {
   }
 
   async dislikeMovie(user_id, movie_id) {
-    return 'movie disliked';
+    try {
+      const data = await this.elasticsearchService.search({
+        index: 'movies',
+        query: { match: { id: movie_id } },
+      });
+
+      const movie =
+        data.hits.hits.length > 0
+          ? (data.hits.hits[0]._source as MovieDto)
+          : null;
+
+      if (!movie) throw new NotFoundException('Movie cannot found');
+
+      const movieLikedBefore = await this.movieRepository.findOneBy({
+        user_id,
+        movie_id,
+      });
+
+      if (!movieLikedBefore)
+        throw new BadRequestException('You havent liked this movie before');
+
+      // Handle Like
+
+      await this.movieRepository.delete({ user_id, movie_id });
+
+      // Handle Directors
+
+      const directors = new Set(movie.directors);
+
+      for (const director of directors) {
+        const directorLikedBefore = await this.directorRepository.findOneBy({
+          name: director,
+          user_id,
+        });
+
+        directorLikedBefore.like_count--;
+        await this.directorRepository.save(directorLikedBefore);
+      }
+
+      // Handle Cast
+
+      for (let i = 0; i < 5; i++) {
+        const actor = movie.cast[i];
+        const actorLikedBefore = await this.actorRepository.findOneBy({
+          actor_name: actor,
+          user_id,
+        });
+
+        actorLikedBefore.like_count--;
+        await this.actorRepository.save(actorLikedBefore);
+      }
+
+      const genres = await this.genreRepository.findOneBy({ user_id });
+
+      // Handle Genres
+      for (const genre of movie.genres) {
+        if (genre === 'TV Movie') {
+          genres.tv_movie--;
+        } else if (genre === 'Science Fiction') {
+          genres.science_fiction--;
+        } else {
+          genres[genre.toLowerCase()]--;
+        }
+      }
+
+      await this.genreRepository.save(genres);
+
+      return {
+        message: 'Movie disliked.',
+        error: null,
+        statusCode: 200,
+      };
+    } catch (err) {
+      if (err instanceof HttpException) {
+        return err.getResponse();
+      } else {
+        throw new InternalServerErrorException('Something went wrong');
+      }
+    }
   }
 }
