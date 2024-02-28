@@ -1,4 +1,12 @@
-import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthGuard, GoogleOAuthGuard } from './user.guard';
 
@@ -25,19 +33,19 @@ export class UserController {
     return await this.userService.getUserProfile();
   }
 
-  // @UseGuards(AuthGuard)
-  @Get('like/:id') //TODO: change method back to POST
-  async likeMovie(@Param() params) {
-    const user_id = '118006333011418088831';
+  @UseGuards(AuthGuard)
+  @Post('like/:id')
+  async likeMovie(@Param() params, @Req() req) {
+    const user_id = req.user;
     const movie_id = params.id;
 
     return await this.userService.likeMovie(user_id, movie_id);
   }
 
-  // @UseGuards(AuthGuard)
-  @Get('dislike/:id') //TODO: change method back to DELETE
-  async dislikeMovie(@Param() params) {
-    const user_id = '118006333011418088831';
+  @UseGuards(AuthGuard)
+  @Delete('dislike/:id')
+  async dislikeMovie(@Param() params, @Req() req) {
+    const user_id = req.user;
     const movie_id = params.id;
     return await this.userService.dislikeMovie(user_id, movie_id);
   }
